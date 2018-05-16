@@ -4,15 +4,20 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
+import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
 public class Producer {
-	
-	//private Queue queue;
-	private Topic topic;
+
+	private Queue queue;
+	private String selector;
 	private JMSProducer jmsProducer;
 	JMSContext jmsContext;
+
+	Producer(String selector_) {
+		selector = selector_;
+	}
 
 	public void initializeConnection() {
 		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
@@ -22,8 +27,7 @@ public class Producer {
 					.setProperty(com.sun.messaging.ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
 			jmsContext = connectionFactory.createContext();
 			jmsProducer = jmsContext.createProducer();
-			topic = new com.sun.messaging.Topic("ATJTopic");
-			//queue = new com.sun.messaging.Queue("ATJQueue");
+			queue = new com.sun.messaging.Queue("ATJQueue");
 
 		} catch (JMSException e) {
 			e.printStackTrace();
@@ -32,19 +36,41 @@ public class Producer {
 
 	public void sendMove(int a, int b) {
 
-		String msg = "m" + a + " " + b;
-		//jmsProducer.send(queue, msg);
-		jmsProducer.send(topic, msg);
-		System.out.printf("Wiadomość '%s' została wysłana.\n", msg);
+		try {
+			Message msg = jmsContext.createMessage();
+			msg.setStringProperty("SELECTOR", selector);
+			msg.setStringProperty("MESSAGE", "m" + a + " " + b);
+			jmsProducer.send(queue, msg);
+			System.out.printf("Wiadomość '%s' została wysłana.\n", msg);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void sendWinMove(int a, int b) {
-		String msg = "w"+ a + " " + b;
-		//jmsProducer.send(queue, msg);
-		jmsProducer.send(topic, msg);
-		System.out.printf("Wiadomość '%s' została wysłana.\n", msg);
+		try {
+			Message msg = jmsContext.createMessage();
+			msg.setStringProperty("SELECTOR", selector);
+			msg.setStringProperty("MESSAGE", "w" + a + " " + b);
+			jmsProducer.send(queue, msg);
+			System.out.printf("Wiadomość '%s' została wysłana.\n", msg);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
 	}
 
+	
+	public void sendWait() {
+		try {
+			Message msg = jmsContext.createMessage();
+			msg.setStringProperty("SELECTOR", selector);
+			msg.setStringProperty("MESSAGE", "A"+selector);
+			jmsProducer.send(queue, msg);
+			System.out.printf("Wiadomość '%s' została wysłana.\n", msg);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+	}
 	public void endConnection() {
 		jmsContext.close();
 	}

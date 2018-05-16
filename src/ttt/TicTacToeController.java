@@ -1,13 +1,18 @@
 package ttt;
 
+import java.util.Random;
+
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
+import javax.jms.Queue;
 import javax.jms.Topic;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import ttt.GameState.Player;
@@ -19,9 +24,10 @@ public class TicTacToeController {
 	GameState gameState;
 	Producer producer;
 	Consumer consumer;
+	String selector;
 
 	@FXML
-	private Label label;
+	public Label label;
 
 	@FXML
 	private Button button00;
@@ -46,51 +52,106 @@ public class TicTacToeController {
 
 	@FXML
 	public void initialize() {
-		gameState = new GameState();
-		
-		producer = new Producer();
-		consumer = new Consumer(this, gameState);
+		selector = String.valueOf(new Random().nextInt(654321));
+		gameState = new GameState(selector);
+		producer = new Producer(selector);
+		consumer = new Consumer(this, gameState, selector);
 		producer.initializeConnection();
 		receiveQueueMessagesAsynch();
 		initializeButtonArray();
-
+		
 	}
 
 	private void handleButton(int a, int b) {
-		System.out.println("IN->MOVE");
-		System.out.println(gameState.getTurn());
-		System.out.println(gameState.getMovesCounter());
-		if (!gameState.getTurn())
+		//System.out.println("IN->MOVE");
+		//System.out.println(gameState.getTurn());
+		//System.out.println(gameState.getMovesCounter());
+		if (!gameState.getTurn() || buttons[a][b].getText()!="")
 			return;
-		if (!gameState.isItMyMove(a, b)) {
-			gameState.toggleTurn();
-			buttons[a][b].setText(gameState.getPlayerString());
-			gameState.advanceMovesCounter();
-			if (gameState.checkMove(a, b)) {
-				label.setText("You won!");
-				producer.sendWinMove(a, b);
-			}
-			else {
-				System.out.println("handleButton sendMove!");
-				producer.sendMove(a, b);
-			}
+		Platform.runLater( () -> {label.setText("Opponent's turn!");});
+		gameState.toggleTurn();
+		buttons[a][b].setText(gameState.getPlayerString());
+		gameState.advanceMovesCounter();
+		
+		if (gameState.checkMove(a, b)) {
+			producer.sendWinMove(a, b);
+			label.setText("You won!");
+			Platform.runLater( () -> {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("You won!");
+				alert.setHeaderText(null);
+				alert.setContentText("Press OK to restart game!");
+				alert.showAndWait();
+
+			gameState.resetGame();
+			for(int i=0; i<3; ++i)
+				for(int j=0; j<3; ++j)
+					buttons[i][j].setText("");
+			});
+			return;
 		}
-		System.out.println("OUT->MOVE");
-		System.out.println(gameState.getTurn());
-		System.out.println(gameState.getMovesCounter());
+		else {
+			System.out.println("handleButton sendMove!");
+			producer.sendMove(a, b);
+		}
+		
+		if(gameState.getMovesCounter()==9) {
+			Platform.runLater( () -> {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Tie!");
+				alert.setHeaderText(null);
+				alert.setContentText("Press OK to restart game!");
+				alert.showAndWait();
+
+			gameState.resetGame();
+			for(int i=0; i<3; ++i)
+				for(int j=0; j<3; ++j)
+					buttons[i][j].setText("");
+			});
+			return;
+		}
+		//System.out.println("OUT->MOVE");
+		//System.out.println(gameState.getTurn());
+		//System.out.println(gameState.getMovesCounter());
 	}
 
 	public void opponentMoveAt(int a, int b) {
-		if(gameState.isItMyMove(a, b))
-			return;
+
 		if(gameState.getPlayer() == Player.O)
 			Platform.runLater( () -> {buttons[a][b].setText("X");});
 		else
 			Platform.runLater( () -> {buttons[a][b].setText("O");});
+		
+		if(gameState.getMovesCounter()==9) {
+			Platform.runLater( () -> {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Tie!");
+				alert.setHeaderText(null);
+				alert.setContentText("Press OK to restart game!");
+				alert.showAndWait();
+
+			gameState.resetGame();
+			for(int i=0; i<3; ++i)
+				for(int j=0; j<3; ++j)
+					buttons[i][j].setText("");
+			});
+		}
 	}
 	
 	public void opponentWins() {
-		Platform.runLater( () -> {label.setText("Opponent won!");});
+		Platform.runLater( () -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("You lost!");
+			alert.setHeaderText(null);
+			alert.setContentText("Press OK to restart game!");
+			alert.showAndWait();
+
+			gameState.resetGame();
+			for(int i=0; i<3; ++i)
+				for(int j=0; j<3; ++j)
+					buttons[i][j].setText("");
+			});
+
 	}
 	// ugly, but FXML forces this
 	@FXML
@@ -161,10 +222,9 @@ public class TicTacToeController {
 			.setProperty(
 					com.sun.messaging.ConnectionConfiguration.imqAddressList,
 					"localhost:7676/jms");
-			Topic topic = new com.sun.messaging.Topic("ATJTopic");
-			jmsConsumer = jmsContext.createConsumer(topic);
-			//Queue queue = new com.sun.messaging.Queue("ATJQueue");
-			//jmsConsumer = jmsContext.createConsumer(queue);
+		
+			Queue queue = new com.sun.messaging.Queue("ATJQueue");
+			jmsConsumer = jmsContext.createConsumer(queue, "SELECTOR<> '" + selector + "'");
 			
 			//jmsConsumer.setMessageListener(new Consumer());
 			jmsConsumer.setMessageListener(consumer);
