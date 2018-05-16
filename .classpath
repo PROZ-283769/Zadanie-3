@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/javax.jms-api.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/javaee.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/imqstomp.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/imqjmx.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/imqjmsra.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/imqjmsbridge.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/imqbroker.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/gf-client.jar"/>
+	<classpathentry kind="lib" path="/home/ccc/eclipse-workspace/TicTacToe/lib/fscontext.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
