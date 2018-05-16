@@ -1,18 +1,9 @@
 package ttt;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.Queue;
-import javax.jms.TextMessage;
-import javax.jms.Topic;
-
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import ttt.GameState.Player;
 
 public class Consumer implements MessageListener {

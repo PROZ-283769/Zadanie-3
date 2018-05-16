@@ -7,7 +7,6 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Queue;
-import javax.jms.Topic;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

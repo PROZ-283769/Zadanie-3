@@ -6,7 +6,6 @@ import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.Queue;
-import javax.jms.Topic;
 
 public class Producer {
 
