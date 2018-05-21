@@ -65,6 +65,6 @@
                </font></Button>
          </children>
       </GridPane>
-      <Label fx:id="label" layoutX="182.0" layoutY="14.0" minHeight="-Infinity" minWidth="200.0" prefWidth="200.0" text="Waiting for other player..." AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Label fx:id="label" layoutX="182.0" layoutY="14.0" minHeight="-Infinity" minWidth="200.0" prefWidth="200.0" text="First player to click will be X!" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

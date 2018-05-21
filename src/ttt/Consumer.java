@@ -30,6 +30,7 @@ public class Consumer implements MessageListener {
 			return;
 		//System.out.println("MESSAGE: "+textMessage);
 		if(textMessage.charAt(0)=='A') {
+			//System.out.println("GOT WAIT");
 			gameState.setOpponentSelector(textMessage.substring(1, textMessage.length()));
 			return;
 		}
@@ -46,17 +47,19 @@ public class Consumer implements MessageListener {
 				if(gameState.getMovesCounter() == 0) {
 					gameState.setPlayer(Player.O);
 					gameState.toggleTurn();
+					
 				}
 				gameState.advanceMovesCounter();
 				controller.opponentMoveAt(a, b);
 				gameState.toggleTurn();
+				Platform.runLater( () -> {controller.label.setText("Your turn!");});
 			}
 			else {
 				controller.opponentMoveAt(a, b);
 				controller.opponentWins();
-				
+				Platform.runLater( () -> {controller.label.setText("First player to click will be X!");});
 			}
-			Platform.runLater( () -> {controller.label.setText("Your turn!");});
+			
 			//System.out.printf("Odebrano wiadomość:'%s'\n", textMessage);
 		} catch (JMSException e) {
 			e.printStackTrace();

@@ -81,17 +81,20 @@ public class TicTacToeController {
 			producer.sendWinMove(a, b);
 			label.setText("You won!");
 			Platform.runLater( () -> {
+				gameState.resetGame();
+				for(int i=0; i<3; ++i)
+					for(int j=0; j<3; ++j)
+						buttons[i][j].setText("");
+				label.setText("First player to click will be X!");
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("You won!");
 				alert.setHeaderText(null);
 				alert.setContentText("Press OK to restart game!");
 				alert.showAndWait();
 
-			gameState.resetGame();
-			for(int i=0; i<3; ++i)
-				for(int j=0; j<3; ++j)
-					buttons[i][j].setText("");
+
 			});
+
 			return;
 		}
 		else {
@@ -101,17 +104,21 @@ public class TicTacToeController {
 		
 		if(gameState.getMovesCounter()==9) {
 			Platform.runLater( () -> {
+
+				gameState.resetGame();
+				for(int i=0; i<3; ++i)
+					for(int j=0; j<3; ++j)
+						buttons[i][j].setText("");
+				label.setText("First player to click will be X!");
+
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Tie!");
 				alert.setHeaderText(null);
 				alert.setContentText("Press OK to restart game!");
 				alert.showAndWait();
 
-			gameState.resetGame();
-			for(int i=0; i<3; ++i)
-				for(int j=0; j<3; ++j)
-					buttons[i][j].setText("");
 			});
+
 			return;
 		}
 		//System.out.println("OUT->MOVE");
@@ -128,34 +135,40 @@ public class TicTacToeController {
 		
 		if(gameState.getMovesCounter()==9) {
 			Platform.runLater( () -> {
+
+				gameState.resetGame();
+				for(int i=0; i<3; ++i)
+					for(int j=0; j<3; ++j)
+						buttons[i][j].setText("");
+				label.setText("First player to click will be X!");
+
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Tie!");
 				alert.setHeaderText(null);
 				alert.setContentText("Press OK to restart game!");
 				alert.showAndWait();
 
-			gameState.resetGame();
-			for(int i=0; i<3; ++i)
-				for(int j=0; j<3; ++j)
-					buttons[i][j].setText("");
 			});
+			return;
 		}
 	}
 	
 	public void opponentWins() {
 		Platform.runLater( () -> {
+
+			gameState.resetGame();
+			for(int i=0; i<3; ++i)
+				for(int j=0; j<3; ++j)
+					buttons[i][j].setText("");
+			label.setText("First player to click will be X!");
+
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("You lost!");
 			alert.setHeaderText(null);
 			alert.setContentText("Press OK to restart game!");
 			alert.showAndWait();
 
-			gameState.resetGame();
-			for(int i=0; i<3; ++i)
-				for(int j=0; j<3; ++j)
-					buttons[i][j].setText("");
 			});
-
 	}
 	// ugly, but FXML forces this
 	@FXML
