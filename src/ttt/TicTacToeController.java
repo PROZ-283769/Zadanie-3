@@ -9,11 +9,14 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectExpression;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.text.Font;
 import ttt.GameState.Player;
 
 public class TicTacToeController {
@@ -28,6 +31,7 @@ public class TicTacToeController {
 	@FXML
 	public Label label;
 
+	
 	@FXML
 	private Button button00;
 	@FXML
@@ -48,6 +52,7 @@ public class TicTacToeController {
 	private Button button22;
 
 	private Button[][] buttons;
+	ObjectExpression<Font> fontTracking;
 
 	@FXML
 	public void initialize() {
@@ -201,6 +206,7 @@ public class TicTacToeController {
 	public void initializeButtonArray() {
 
 		buttons = new Button[3][3];
+		
 		buttons[0][0] = button00;
 		buttons[0][1] = button01;
 		buttons[0][2] = button02;
@@ -210,7 +216,18 @@ public class TicTacToeController {
 		buttons[2][0] = button20;
 		buttons[2][1] = button21;
 		buttons[2][2] = button22;
+		
+		
+	    
+		for(int i=0; i<3; ++i)
+			for(int j=0; j<3; ++j) {
+				final int x = i;
+				final int y = j;
+				fontTracking = Bindings.createObjectBinding(() -> Font.font(buttons[x][y].getWidth() / 3), buttons[x][y].widthProperty());
+				fontTracking = Bindings.createObjectBinding(() -> Font.font(buttons[x][y].getHeight() / 3), buttons[x][y].heightProperty());
 
+				buttons[i][j].fontProperty().bind(fontTracking);
+			}
 	}
 	
 	public void receiveQueueMessagesAsynch() {
